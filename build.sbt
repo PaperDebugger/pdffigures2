@@ -32,6 +32,7 @@ lazy val projectSettings = Seq(
     "org.apache.pdfbox" % "pdfbox" % "2.0.26",
     "org.apache.pdfbox" % "fontbox" % "2.0.26",
     "com.typesafe" % "config" % "1.4.2",
+    "com.github.jai-imageio" % "jai-imageio-jpeg2000" % "1.4.0",
 
     // So PDFBox can parse more image formats
     // These are disabled by default, because they are not licensed flexibly enough.
