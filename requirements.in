@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+loguru
+celery
+python-dotenv
+flower
+redis
+python-multipart

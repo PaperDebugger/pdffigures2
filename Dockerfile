@@ -12,18 +12,21 @@ RUN apt-get update && \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install FastAPI and Uvicorn
-RUN pip3 install fastapi uvicorn[standard] python-multipart
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+
+# Copy the FastAPI application code
+COPY app/ .
 
 # Copy the built JAR file into the container
 COPY pdffigures2.jar /app/pdffigures2.jar
 
-# Copy the FastAPI application code
-COPY app.py /app/app.py
-COPY helpers.py /app/helpers.py
+RUN mkdir -p /app/logs /app/uploads /app/data
 
-# Expose the port (change if necessary)
+# Expose port 8000 for FastAPI
 EXPOSE 8000
 
 # Set the entry point to run the FastAPI app
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
