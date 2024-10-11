@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
+from helpers import process_json
 import subprocess
 import os
 import uuid
@@ -30,7 +31,9 @@ async def extract(file: UploadFile = File(...)):
 
         # Define prefixes for output files
         output_metadata_prefix = os.path.join(temp_dir, "data-")
-        output_figure_prefix = os.path.join(temp_dir, "figure-")
+        # output_figure_prefix = os.path.join(temp_dir, "figure-")
+
+        os.makedirs(output_metadata_prefix, exist_ok=True)
 
         # Save the uploaded PDF file
         try:
@@ -44,14 +47,23 @@ async def extract(file: UploadFile = File(...)):
 
         cmd = [
             "java",
-            "-jar",
+            "-cp",
             "/app/pdffigures2.jar",
-            "-d",
-            output_metadata_prefix,
-            "-m",
-            output_figure_prefix,
+            "org.allenai.pdffigures2.FigureExtractorBatchCli",
             input_path,
+            "-g",
+            output_metadata_prefix,
         ]
+        # cmd = [
+        #     "java",
+        #     "-jar",
+        #     "/app/pdffigures2.jar",
+        #     "-d",
+        #     output_metadata_prefix,
+        #     "-m",
+        #     output_figure_prefix,
+        #     input_path,
+        # ]
 
         try:
             # Run pdffigures2 asynchronously
@@ -82,11 +94,12 @@ async def extract(file: UploadFile = File(...)):
             with open(output_json_path, "r") as f:
                 metadata = json.load(f)
 
+            full_text = process_json(metadata)
             # Log success
             logger.info(f"Extraction successful for {file.filename}")
 
             # Return the metadata
-            return metadata
+            return {"metadata": metadata, "full_text": full_text}
 
         except Exception as e:
             logger.error(f"Error during processing: {e}")

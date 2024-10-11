@@ -20,6 +20,7 @@ COPY pdffigures2.jar /app/pdffigures2.jar
 
 # Copy the FastAPI application code
 COPY app.py /app/app.py
+COPY helpers.py /app/helpers.py
 
 # Expose the port (change if necessary)
 EXPOSE 8000
