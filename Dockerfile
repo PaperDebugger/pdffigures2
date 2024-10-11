@@ -1,21 +1,30 @@
-# Use an official OpenJDK runtime as the base image
-FROM openjdk:11-jdk-slim
+FROM python:3.10-slim
+
+# Install OpenJDK 17 and other required dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless \
+    poppler-utils \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
 WORKDIR /app
 
-# Install required dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    poppler-utils \
-    python3 \
-    python3-pip \
-    && rm -rf /var/lib/apt/lists/*
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Add Poetry to PATH
+ENV PATH="/root/.local/bin:$PATH"
+
+# Disable Poetry's virtual environments (optional)
+ENV POETRY_VIRTUALENVS_CREATE=false
+
+# Copy pyproject.toml and poetry.lock
+COPY pyproject.toml poetry.lock ./
 
 # Install Python dependencies
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
+RUN poetry install --no-interaction --no-ansi
 
 # Copy the FastAPI application code
 COPY app/ .
@@ -23,6 +32,7 @@ COPY app/ .
 # Copy the built JAR file into the container
 COPY pdffigures2.jar /app/pdffigures2.jar
 
+# Create necessary directories
 RUN mkdir -p /app/logs /app/uploads /app/data
 
 # Expose port 8000 for FastAPI
