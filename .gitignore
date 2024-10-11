@@ -13,3 +13,5 @@ evaluation/datasets/**/*.pgm
 figures/
 data/
 .bsp/
+
+.env
