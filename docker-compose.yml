@@ -3,7 +3,7 @@ services:
   fastapi:
     build: .
     ports:
-      - "8000:8000"
+      - "28000:8000"
     volumes:
 
       - ./logs:/app/logs
@@ -46,7 +46,7 @@ services:
     build: .
     command: celery -A celery_tasks flower --port=5555 --basic-auth=admin:admin
     ports:
-      - 5555:5555
+      - 25555:5555
     # user: "${UID}:${GID}"
     env_file:
       - ./.env
