@@ -25,6 +25,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Docker image
         run: |
-          docker build -t paperdebugger/pdf-parser:latest .
-          docker tag paperdebugger/pdf-parser:latest ghcr.io/paperdebugger/pdf-parser:latest
-          docker push ghcr.io/paperdebugger/pdf-parser:latest
+          docker build -t paperdebugger/pdffigures2:latest .
+          docker tag paperdebugger/pdffigures2:latest ghcr.io/paperdebugger/pdffigures2:latest
+          docker push ghcr.io/paperdebugger/pdffigures2:latest
